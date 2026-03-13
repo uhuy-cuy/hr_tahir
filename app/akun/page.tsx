@@ -103,7 +103,8 @@ export default function KelolaAkun() {
             email: "",
             password: "",
             role: "karyawan",
-            status: "1"
+            status: "1",
+            id_karyawan: undefined
         })
 
         setShowForm(true)
@@ -151,16 +152,19 @@ export default function KelolaAkun() {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
 
         const url = isEdit
             ? `http://127.0.0.1:8000/api/users/${formData.id}`
-            : `http://127.0.0.1:8000/api/users`
+            : `http://127.0.0.1:8000/api/users`;
 
-        const method = isEdit ? "PUT" : "POST"
+        const method = isEdit ? "PUT" : "POST";
 
-        const bodyData: any = { ...formData }
-        if (!bodyData.password) delete bodyData.password
+        const bodyData: any = { ...formData };
+        if (!bodyData.password) delete bodyData.password;
+
+        // --- Tambahkan console log di sini ---
+        console.log("Data yang akan dikirim ke API:", bodyData);
 
         try {
             const res = await fetch(url, {
@@ -170,22 +174,22 @@ export default function KelolaAkun() {
                     Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify(bodyData)
-            })
+            });
 
             if (!res.ok) {
-                const data = await res.json()
-                Swal.fire("Error", data.message || "Gagal menyimpan data", "error")
-                return
+                const data = await res.json();
+                Swal.fire("Error", data.message || "Gagal menyimpan data", "error");
+                return;
             }
 
-            Swal.fire("Sukses", "Data tersimpan", "success")
-            setShowForm(false)
-            fetchUsers()
+            Swal.fire("Sukses", "Data tersimpan", "success");
+            setShowForm(false);
+            fetchUsers();
 
         } catch (err: any) {
-            Swal.fire("Error", err.message || "Tidak bisa menghubungi server", "error")
+            Swal.fire("Error", err.message || "Tidak bisa menghubungi server", "error");
         }
-    }
+    };
 
     // ===== FILTER SEARCH =====
     const filteredUsers = users.filter(u =>
@@ -418,10 +422,14 @@ export default function KelolaAkun() {
                                     Karyawan {isEdit && <span className="text-gray-500 text-xs">(tidak bisa diubah)</span>}
                                 </label>
                                 <Select
-                                    value={karyawans
-                                        .map(k => ({ value: k.id_karyawan, label: k.nama }))
-                                        .find(opt => opt.value === formData.id_karyawan) || null}
-                                    onChange={selected => setFormData({ ...formData, id_karyawan: selected ? selected.value : undefined })}
+                                    value={
+                                        karyawans
+                                            .map(k => ({ value: k.id_karyawan, label: k.nama }))
+                                            .find(opt => opt.value === formData.id_karyawan) || null
+                                    }
+                                    onChange={selected => {
+                                        setFormData(prev => ({ ...prev, id_karyawan: selected ? selected.value : undefined }));
+                                    }}
                                     options={karyawans.map(k => ({ value: k.id_karyawan, label: k.nama }))}
                                     placeholder="Pilih Karyawan..."
                                     isDisabled={isEdit}
@@ -430,7 +438,7 @@ export default function KelolaAkun() {
                                     styles={{
                                         control: (provided) => ({
                                             ...provided,
-                                            borderColor: "#111827" // border lebih gelap / hampir hitam
+                                            borderColor: "#111827"
                                         })
                                     }}
                                 />
