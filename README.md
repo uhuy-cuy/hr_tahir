@@ -40,12 +40,12 @@ Pastikan **API sudah dijalankan terlebih dahulu** :
 
 Jika API belum dijalankan, beberapa fitur seperti:
 
-•	Login (Admin HR, Karyawan)
-•	Manajemen Karyawan: Tambah data karyawan, Lihat daftar karyawan, Edit data karyawan, Hapus data karyawan
-•	Data Jabatan & Departemen: Kelola jabatan, Kelola departemen
-•	Absensi: Input absensi karyawan, Lihat riwayat absensi
-•	Cuti: Pengajuan cuti karyawan, Persetujuan cuti oleh HR
-•	Dashboard: Total karyawan, Jumlah karyawan aktif, Rekap absensi / cuti
+- Login (Admin HR, Karyawan)
+- Manajemen Karyawan: Tambah data karyawan, Lihat daftar karyawan, Edit data karyawan, Hapus data karyawan
+- Data Jabatan & Departemen: Kelola jabatan, Kelola departemen
+- Absensi: Input absensi karyawan, Lihat riwayat absensi
+- Cuti: Pengajuan cuti karyawan, Persetujuan cuti oleh HR
+- Dashboard: Total karyawan, Jumlah karyawan aktif, Rekap absensi / cuti
 
 tidak akan berfungsi.
 
