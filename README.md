@@ -32,7 +32,7 @@ http://localhost:3000
 
 Aplikasi ini membutuhkan **API Backend Laravel** agar semua fitur dapat berjalan dengan baik.
 
-Pastikan **API sudah dijalankan terlebih dahulu**, biasanya di:
+Pastikan **API sudah dijalankan terlebih dahulu di https://github.com/uhuy-cuy/api_hr_tahir**, biasanya di:
 
 ```
 http://127.0.0.1:8000
