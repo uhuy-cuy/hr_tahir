@@ -4,7 +4,6 @@ Ikuti langkah-langkah berikut untuk menjalankan project Next.js:
 
 # 1. Clone repository
 git clone https://github.com/uhuy-cuy/hr_tahir.git
-cd hr_tahir
 
 # 2. Install semua dependencies
 npm install
