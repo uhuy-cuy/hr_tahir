@@ -1,6 +1,6 @@
 Menjalankan Project Secara Lokal
 
-Ikuti langkah-langkah berikut untuk menjalankan project Next.js ini di komputer kamu:
+Ikuti langkah-langkah berikut untuk menjalankan project Next.js:
 
 # 1. Clone repository
 git clone https://github.com/uhuy-cuy/hr_tahir.git
