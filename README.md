@@ -15,3 +15,5 @@ npm run dev
 Setelah server berjalan, buka browser dan akses:
 
 http://localhost:3000
+
+Jangan lupa API jalankan juga ya
