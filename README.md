@@ -35,7 +35,7 @@ Aplikasi ini membutuhkan **API Backend Laravel** agar semua fitur dapat berjalan
 Pastikan **API sudah dijalankan terlebih dahulu** :
 
 ```
-[http://127.0.0.1:8000](https://github.com/uhuy-cuy/api_hr_tahir)
+https://github.com/uhuy-cuy/api_hr_tahir
 ```
 
 Jika API belum dijalankan, beberapa fitur seperti:
