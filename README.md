@@ -32,19 +32,20 @@ http://localhost:3000
 
 Aplikasi ini membutuhkan **API Backend Laravel** agar semua fitur dapat berjalan dengan baik.
 
-Pastikan **API sudah dijalankan terlebih dahulu di https://github.com/uhuy-cuy/api_hr_tahir**, biasanya di:
+Pastikan **API sudah dijalankan terlebih dahulu** :
 
 ```
-http://127.0.0.1:8000
+[http://127.0.0.1:8000](https://github.com/uhuy-cuy/api_hr_tahir)
 ```
 
 Jika API belum dijalankan, beberapa fitur seperti:
 
-- Login
-- Data Karyawan
-- Manajemen User
-- Absensi / Cuti
-- DLL
+•	Login (Admin HR, Karyawan)
+•	Manajemen Karyawan: Tambah data karyawan, Lihat daftar karyawan, Edit data karyawan, Hapus data karyawan
+•	Data Jabatan & Departemen: Kelola jabatan, Kelola departemen
+•	Absensi: Input absensi karyawan, Lihat riwayat absensi
+•	Cuti: Pengajuan cuti karyawan, Persetujuan cuti oleh HR
+•	Dashboard: Total karyawan, Jumlah karyawan aktif, Rekap absensi / cuti
 
 tidak akan berfungsi.
 
