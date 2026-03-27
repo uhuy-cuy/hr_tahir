@@ -42,6 +42,37 @@ export default function AjukanCuti() {
             router.push("/login")
             return
         }
+         // ✅ TAMBAHAN: cek expired token
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]))
+            const now = Date.now() / 1000
+
+            if (payload.exp < now) {
+                localStorage.clear()
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Session Habis",
+                    text: "Silakan login kembali"
+                }).then(() => {
+                    router.push("/login")
+                })
+
+                return
+            }
+        } catch (err) {
+            localStorage.clear()
+
+            Swal.fire({
+                icon: "error",
+                title: "Token Tidak Valid",
+                text: "Silakan login ulang"
+            }).then(() => {
+                router.push("/login")
+            })
+
+            return
+        }
 
         if (userData) setUser(JSON.parse(userData))
 
