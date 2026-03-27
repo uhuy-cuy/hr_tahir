@@ -74,16 +74,17 @@ export default function Absensi() {
         }
     }
 
-    // Fetch cuti
+    // Fetch cuti sesuai id_karyawan langsung dari API
     const fetchCutis = async (token: string, id_karyawan: number) => {
         try {
-            const res = await fetch(`http://127.0.0.1:8000/api/cutis`, {
+            const res = await fetch(`http://127.0.0.1:8000/api/cutis/${id_karyawan}`, {
                 headers: { "Authorization": `Bearer ${token}` }
             })
+
             if (!res.ok) throw new Error("Gagal fetch data cuti")
+
             const data: Cuti[] = await res.json()
-            const myCutis = data.filter(cuti => cuti.id_karyawan === id_karyawan)
-            setCutiList(myCutis)
+            setCutiList(data) // data sudah pasti sesuai id_karyawan
         } catch (err) {
             console.error(err)
         }

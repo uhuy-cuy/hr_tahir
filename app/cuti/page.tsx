@@ -53,24 +53,26 @@ export default function AjukanCuti() {
     }
 
     const fetchCutis = async (token: string, id_karyawan: number | null) => {
-        if (!id_karyawan) return
-        setLoadingData(true) // mulai loading
+        if (!id_karyawan) return;
+        setLoadingData(true);
+
         try {
-            const res = await fetch(`http://127.0.0.1:8000/api/cutis`, {
+            const res = await fetch(`http://127.0.0.1:8000/api/cutis/${id_karyawan}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },
-            })
-            if (!res.ok) throw new Error("Gagal fetch data cuti")
-            const data = await res.json()
-            const myCutis = data.filter((c: any) => c.id_karyawan === id_karyawan)
-            setCutiList(myCutis)
+            });
+
+            if (!res.ok) throw new Error("Gagal fetch data cuti");
+
+            const data = await res.json();
+            setCutiList(data); // sudah pasti sesuai id_karyawan
         } catch (err) {
-            console.error(err)
+            console.error(err);
         } finally {
-            setLoadingData(false) // selesai loading
+            setLoadingData(false);
         }
-    }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

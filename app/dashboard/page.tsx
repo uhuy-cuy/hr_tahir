@@ -23,16 +23,22 @@ export default function Dashboard() {
             return
         }
 
-        if (userData) setUser(JSON.parse(userData))
+        if (userData) {
+            const parsedUser = JSON.parse(userData)
+            setUser(parsedUser)
 
-        fetchKaryawan(token)
-        fetchAbsensi(token)
-        fetchCuti(token)
+            // Hanya fetch absensi & cuti jika role admin/HR
+            if (parsedUser.role === "admin hr") {
+                fetchKaryawan(token)
+                // fetchAbsensi(token)
+                // fetchCuti(token)
+            }
+        }
     }, [])
 
     const fetchKaryawan = async (token: string) => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/api/karyawans", {
+            const res = await fetch("http://127.0.0.1:8000/api/karyawans/count", {
                 headers: { "Authorization": `Bearer ${token}` }
             })
             if (!res.ok) throw new Error("Gagal fetch data karyawan")
@@ -42,85 +48,142 @@ export default function Dashboard() {
             console.error(err)
         }
     }
+    // useEffect(() => {
+    //     const token = localStorage.getItem("token")
+    //     const userData = localStorage.getItem("user")
 
-    const fetchAbsensi = async (token: string) => {
-        try {
-            const res = await fetch("http://127.0.0.1:8000/api/absensis", {
-                headers: { "Authorization": `Bearer ${token}` }
-            })
-            if (!res.ok) throw new Error("Gagal fetch data absensi")
-            const data = await res.json()
-            setAbsensiData(data)
-        } catch (err) {
-            console.error(err)
-        }
-    }
+    //     if (!token) {
+    //         router.push("/login")
+    //         return
+    //     }
 
-    const fetchCuti = async (token: string) => {
-        try {
-            const res = await fetch("http://127.0.0.1:8000/api/cutis", {
-                headers: { "Authorization": `Bearer ${token}` }
-            })
-            if (!res.ok) throw new Error("Gagal fetch data cuti")
-            const data = await res.json()
-            setCutiData(data)
-        } catch (err) {
-            console.error(err)
-        }
-    }
+    //     if (userData) {
+    //         const parsedUser = JSON.parse(userData)
+    //         setUser(parsedUser)
+
+    //         // Hanya fetch absensi & cuti jika role admin/HR
+    //         if (parsedUser.role === "admin hr") {
+    //             fetchKaryawan(token)
+    //             fetchAbsensi(token)
+    //             fetchCuti(token)
+    //         }
+    //     }
+    // }, [])
+
+    // const fetchKaryawan = async (token: string) => {
+    //     try {
+    //         const res = await fetch("http://127.0.0.1:8000/api/karyawans", {
+    //             headers: { "Authorization": `Bearer ${token}` }
+    //         })
+    //         if (!res.ok) throw new Error("Gagal fetch data karyawan")
+    //         const data = await res.json()
+    //         setKaryawanData(data)
+    //     } catch (err) {
+    //         console.error(err)
+    //     }
+    // }
+
+    // const fetchAbsensi = async (token: string) => {
+    //     try {
+    //         const res = await fetch("http://127.0.0.1:8000/api/absensis", {
+    //             headers: { "Authorization": `Bearer ${token}` }
+    //         })
+    //         if (!res.ok) throw new Error("Gagal fetch data absensi")
+    //         const data = await res.json()
+    //         setAbsensiData(data)
+    //     } catch (err) {
+    //         console.error(err)
+    //     }
+    // }
+
+    // const fetchCuti = async (token: string) => {
+    //     try {
+    //         const res = await fetch("http://127.0.0.1:8000/api/cutis", {
+    //             headers: { "Authorization": `Bearer ${token}` }
+    //         })
+    //         if (!res.ok) throw new Error("Gagal fetch data cuti")
+    //         const data = await res.json()
+    //         setCutiData(data)
+    //     } catch (err) {
+    //         console.error(err)
+    //     }
+    // }
 
     // Fungsi export CSV
-    const exportCSV = () => {
-        // Map nama karyawan dari id_karyawan
-        const namaMap: Record<number, string> = {}
-        karyawanData.forEach(k => {
-            namaMap[k.id_karyawan] = k.nama
-        })
+    // Ganti fungsi exportCSV
+    const exportCSV = async () => {
+        const token = localStorage.getItem("token")
+        if (!token) return Swal.fire("Error", "Token tidak ditemukan", "error")
 
-        // Absensi
-        const absensiHeaders = ["ID Absensi", "ID Karyawan", "Nama Karyawan", "Tanggal", "Jam Masuk", "Jam Keluar", "Status"]
-        const absensiRows = absensiData.map(item => [
-            item.id_absensi,
-            item.id_karyawan,
-            namaMap[item.id_karyawan] ?? "",
-            item.tanggal,
-            item.jam_masuk ?? "",
-            item.jam_keluar ?? "",
-            item.status
-        ])
+        try {
+            // Fetch semua data sekaligus
+            const [karyawanRes, absensiRes, cutiRes] = await Promise.all([
+                fetch("http://127.0.0.1:8000/api/karyawans", { headers: { Authorization: `Bearer ${token}` } }),
+                fetch("http://127.0.0.1:8000/api/absensis", { headers: { Authorization: `Bearer ${token}` } }),
+                fetch("http://127.0.0.1:8000/api/cutis", { headers: { Authorization: `Bearer ${token}` } }),
+            ])
 
-        // Cuti
-        const cutiHeaders = ["ID Cuti", "ID Karyawan", "Nama Karyawan", "Tanggal Mulai", "Tanggal Selesai", "Jenis Cuti", "Status"]
-        const cutiRows = cutiData.map(item => [
-            item.id_cuti,
-            item.id_karyawan,
-            namaMap[item.id_karyawan] ?? item.nama ?? "",
-            item.tanggal_mulai,
-            item.tanggal_selesai,
-            item.jenis_cuti,
-            item.status
-        ])
+            if (!karyawanRes.ok || !absensiRes.ok || !cutiRes.ok) throw new Error("Gagal fetch data untuk CSV")
 
-        // Gabungkan CSV
-        let csvContent: string[][] = []
-        csvContent.push(["REKAP ABSENSI"])
-        csvContent.push(absensiHeaders)
-        csvContent.push(...absensiRows)
-        csvContent.push([])
+            const [karyawanData, absensiData, cutiData] = await Promise.all([
+                karyawanRes.json(),
+                absensiRes.json(),
+                cutiRes.json(),
+            ])
 
-        csvContent.push(["REKAP CUTI"])
-        csvContent.push(cutiHeaders)
-        csvContent.push(...cutiRows)
+            // Map nama karyawan
+            const namaMap: Record<number, string> = {}
+            karyawanData.forEach(k => { namaMap[k.id_karyawan] = k.nama })
 
-        const csvString = csvContent.map(e => e.join(",")).join("\n")
+            // Absensi
+            const absensiHeaders = ["ID Absensi", "ID Karyawan", "Nama Karyawan", "Tanggal", "Jam Masuk", "Jam Keluar", "Status"]
+            const absensiRows = absensiData.map(item => [
+                item.id_absensi,
+                item.id_karyawan,
+                namaMap[item.id_karyawan] ?? "",
+                item.tanggal,
+                item.jam_masuk ?? "",
+                item.jam_keluar ?? "",
+                item.status
+            ])
 
-        // Download CSV
-        const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" })
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement("a")
-        link.setAttribute("href", url)
-        link.setAttribute("download", "rekap_absensi_cuti.csv")
-        link.click()
+            // Cuti
+            const cutiHeaders = ["ID Cuti", "ID Karyawan", "Nama Karyawan", "Tanggal Mulai", "Tanggal Selesai", "Jenis Cuti", "Status"]
+            const cutiRows = cutiData.map(item => [
+                item.id_cuti,
+                item.id_karyawan,
+                namaMap[item.id_karyawan] ?? item.nama ?? "",
+                item.tanggal_mulai,
+                item.tanggal_selesai,
+                item.jenis_cuti,
+                item.status
+            ])
+
+            // Gabungkan CSV
+            let csvContent: string[][] = []
+            csvContent.push(["REKAP ABSENSI"])
+            csvContent.push(absensiHeaders)
+            csvContent.push(...absensiRows)
+            csvContent.push([])
+
+            csvContent.push(["REKAP CUTI"])
+            csvContent.push(cutiHeaders)
+            csvContent.push(...cutiRows)
+
+            const csvString = csvContent.map(e => e.join(",")).join("\n")
+
+            // Download CSV
+            const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement("a")
+            link.setAttribute("href", url)
+            link.setAttribute("download", "rekap_absensi_cuti.csv")
+            link.click()
+
+        } catch (err) {
+            console.error(err)
+            Swal.fire("Error", "Gagal fetch data CSV", "error")
+        }
     }
 
     const handleLogout = () => {
